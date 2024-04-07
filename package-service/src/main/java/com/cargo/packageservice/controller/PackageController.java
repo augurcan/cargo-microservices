@@ -17,7 +17,7 @@ public class PackageController {
         this.packageService = packageService;
     }
     @GetMapping("/{packageId}")
-    public ResponseEntity<PackageResponse> getPackageById(@PathVariable Long packageId){
+    public ResponseEntity<PackageResponse> getPackageById(@PathVariable String packageId){
         return ResponseEntity.ok(packageService.getPackageById(packageId));
     }
     @GetMapping
@@ -29,11 +29,11 @@ public class PackageController {
         return ResponseEntity.ok(packageService.addPackage(packageRequest));
     }
     @PutMapping("/{packageId}")
-    public ResponseEntity<PackageResponse> updatePackage(@PathVariable Long packageId, @RequestBody PackageRequest packageRequest){
+    public ResponseEntity<PackageResponse> updatePackage(@PathVariable String packageId, @RequestBody PackageRequest packageRequest){
         return ResponseEntity.ok(packageService.updatePackage(packageId,packageRequest));
     }
     @DeleteMapping("/{packageId}")
-    public ResponseEntity<String> deletePackage(@PathVariable Long packageId){
+    public ResponseEntity<String> deletePackage(@PathVariable String packageId){
         packageService.deletePackage(packageId);
         return ResponseEntity.ok("Package Deleted");
     }

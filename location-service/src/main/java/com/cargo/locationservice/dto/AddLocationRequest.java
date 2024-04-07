@@ -5,24 +5,24 @@ import com.cargo.locationservice.model.Address;
 import java.util.ArrayList;
 
 public class AddLocationRequest {
-    private Long packageId;
+    private String packageId;
     private ArrayList<Address> addressList;
     private boolean deliveryStatus;
 
     public AddLocationRequest() {
     }
 
-    public AddLocationRequest(Long packageId, ArrayList<Address> addressList, boolean deliveryStatus) {
+    public AddLocationRequest(String packageId, ArrayList<Address> addressList, boolean deliveryStatus) {
         this.packageId = packageId;
         this.addressList = addressList;
         this.deliveryStatus = deliveryStatus;
     }
 
-    public Long getPackageId() {
+    public String getPackageId() {
         return packageId;
     }
 
-    public void setPackageId(Long packageId) {
+    public void setPackageId(String packageId) {
         this.packageId = packageId;
     }
 

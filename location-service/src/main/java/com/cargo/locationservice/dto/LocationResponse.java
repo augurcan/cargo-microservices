@@ -5,15 +5,15 @@ import com.cargo.locationservice.model.Address;
 import java.util.ArrayList;
 
 public class LocationResponse{
-    private Long id;
-    private Long packageId;
+    private String id;
+    private String packageId;
     private ArrayList<Address> addressArrayList;
     private boolean deliveryStatus;
 
     public LocationResponse() {
     }
 
-    public LocationResponse(Long id, Long packageId, ArrayList<Address> addressArrayList, boolean deliveryStatus) {
+    public LocationResponse(String id, String packageId, ArrayList<Address> addressArrayList, boolean deliveryStatus) {
         this.id = id;
         this.packageId = packageId;
         this.addressArrayList = addressArrayList;
@@ -28,19 +28,19 @@ public class LocationResponse{
         this.addressArrayList = addressArrayList;
     }
 
-    public Long getPackageId() {
+    public String getPackageId() {
         return packageId;
     }
 
-    public void setPackageId(Long packageId) {
+    public void setPackageId(String packageId) {
         this.packageId = packageId;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

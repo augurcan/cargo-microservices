@@ -1,13 +1,15 @@
 package com.cargo.packageservice.model;
 
 import com.cargo.packageservice.dto.UserDto;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
 @Document
 public class Package {
-    private Long id;
+    @Id
+    private String id;
     private UserDto sender;
     private UserDto recipient;
     private String content;
@@ -39,7 +41,7 @@ public class Package {
         this.deliveryAddress = deliveryAddress;
     }
 
-    public Package(Long id, UserDto sender,
+    public Package(String id, UserDto sender,
                    UserDto recipient, String content,
                    double weight, String dimension,
                    String deliveryService, boolean deliveryStatus,
@@ -59,7 +61,7 @@ public class Package {
         this.deliveryDate = deliveryDate;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

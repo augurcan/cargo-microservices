@@ -1,41 +1,43 @@
 package com.cargo.locationservice.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 
 @Document
 public class Location {
-    private Long id;
-    private Long packageId;
+    @Id
+    private String id;
+    private String packageId;
     private ArrayList<Address> address;
     private boolean deliveryStatus;
 
     public Location() {
     }
 
-    public Location(Long packageId, ArrayList<Address> address, boolean deliveryStatus) {
+    public Location(String packageId, ArrayList<Address> address, boolean deliveryStatus) {
         this.packageId = packageId;
         this.address = address;
         this.deliveryStatus = deliveryStatus;
     }
 
-    public Location(Long id, Long packageId, ArrayList<Address> address, boolean deliveryStatus) {
+    public Location(String id, String packageId, ArrayList<Address> address, boolean deliveryStatus) {
         this.id = id;
         this.packageId = packageId;
         this.address = address;
         this.deliveryStatus = deliveryStatus;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public Long getPackageId() {
+    public String getPackageId() {
         return packageId;
     }
 
-    public void setPackageId(Long packageId) {
+    public void setPackageId(String packageId) {
         this.packageId = packageId;
     }
 

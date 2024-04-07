@@ -18,7 +18,7 @@ public class LocationController {
         this.locationService = locationService;
     }
     @GetMapping("/{locationId}")
-    public ResponseEntity<LocationResponse> getLocationById(@PathVariable Long locationId){
+    public ResponseEntity<LocationResponse> getLocationById(@PathVariable String locationId){
         return ResponseEntity.ok(locationService.getLocationById(locationId));
     }
     @GetMapping
@@ -26,7 +26,7 @@ public class LocationController {
         return ResponseEntity.ok(locationService.getAllLocations());
     }
     @DeleteMapping("/{locationId}")
-    public ResponseEntity<String> deleteLocation(@PathVariable Long locationId){
+    public ResponseEntity<String> deleteLocation(@PathVariable String locationId){
         locationService.deleteLocation(locationId);
         return ResponseEntity.ok("Location Deleted");
     }
@@ -35,17 +35,17 @@ public class LocationController {
         return ResponseEntity.ok(locationService.addLocation(addLocationRequest));
     }
     @PutMapping("/{locationId}")
-    public ResponseEntity<LocationResponse> updateLocation(@PathVariable Long locationId,
+    public ResponseEntity<LocationResponse> updateLocation(@PathVariable String locationId,
                                                            @RequestBody AddLocationRequest addLocationRequest){
         return ResponseEntity.ok(locationService.updateLocation(locationId,addLocationRequest));
     }
     @PostMapping("/{locationId}/address")
-    public ResponseEntity<LocationResponse> addAddress(@PathVariable Long locationId,
+    public ResponseEntity<LocationResponse> addAddress(@PathVariable String locationId,
                                                        @RequestBody AddAddressRequest addAddressRequest){
         return ResponseEntity.ok(locationService.addNewAddressToLocation(locationId,addAddressRequest));
     }
     @PutMapping("/{locationId}/address/{addressIndex}")
-    public ResponseEntity<LocationResponse> updateAddress(@PathVariable Long locationId,
+    public ResponseEntity<LocationResponse> updateAddress(@PathVariable String locationId,
                                                           @PathVariable int addressIndex,
                                                           @RequestBody AddAddressRequest addAddressRequest){
         return ResponseEntity.ok(locationService.updateAddress(locationId,addressIndex,addAddressRequest));

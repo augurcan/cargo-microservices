@@ -3,7 +3,7 @@ package com.cargo.packageservice.dto;
 import java.time.LocalDate;
 
 public class PackageResponse {
-    private Long id;
+    private String id;
     private UserDto sender;
     private UserDto recipient;
     private String content;
@@ -19,7 +19,7 @@ public class PackageResponse {
     public PackageResponse() {
     }
 
-    public PackageResponse(Long id,
+    public PackageResponse(String id,
                            UserDto sender,
                            UserDto recipient,
                            String content,
@@ -45,11 +45,11 @@ public class PackageResponse {
         this.deliveryDate = deliveryDate;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

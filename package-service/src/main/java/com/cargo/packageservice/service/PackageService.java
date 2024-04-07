@@ -27,10 +27,10 @@ public class PackageService {
         packageRepository.save(packageModel);
         return packageDtoConverter.convertModelToResponse(packageModel);
     }
-    public void deletePackage(Long packageId){
+    public void deletePackage(String packageId){
         packageRepository.delete(findPackageById(packageId));
     }
-    public PackageResponse updatePackage(Long packageId, PackageRequest packageRequest){
+    public PackageResponse updatePackage(String packageId, PackageRequest packageRequest){
         Package packageModel = findPackageById(packageId);
         packageModel.setSender(packageRequest.getSender());
         packageModel.setRecipient(packageRequest.getRecipient());
@@ -43,7 +43,7 @@ public class PackageService {
         packageModel.setDeliveryAddress(packageRequest.getDeliveryAddress());
         return new PackageResponse();
     }
-    public PackageResponse getPackageById(Long packageId){
+    public PackageResponse getPackageById(String packageId){
         Package packageModel = findPackageById(packageId);
         return packageDtoConverter.convertModelToResponse(packageModel);
     }
@@ -51,7 +51,7 @@ public class PackageService {
         List<Package> packageList = packageRepository.findAll();
         return packageList.stream().map(packageDtoConverter::convertModelToResponse).collect(Collectors.toList());
     }
-    private Package findPackageById(Long packageId){
+    private Package findPackageById(String packageId){
         return packageRepository.findById(packageId).orElseThrow(()->new ResourceNotFoundException("Package","Id",packageId));
     }
 }

@@ -22,7 +22,7 @@ public class LocationService {
         this.locationRepository = locationRepository;
         this.locationDtoConverter = locationDtoConverter;
     }
-    public LocationResponse getLocationById(Long locationId){
+    public LocationResponse getLocationById(String locationId){
         return locationDtoConverter.convertModelToResponse(findLocationById(locationId));
     }
     public List<LocationResponse> getAllLocations(){
@@ -30,14 +30,14 @@ public class LocationService {
         return locationList.stream().map(locationDtoConverter::convertModelToResponse).collect(Collectors.toList());
     }
 
-    public LocationResponse addNewAddressToLocation(Long locationId, AddAddressRequest addAddressRequest){
+    public LocationResponse addNewAddressToLocation(String locationId, AddAddressRequest addAddressRequest){
         Location location = findLocationById(locationId);
         location.getAddress().add(addAddressRequest.getAddress());
         location.setDeliveryStatus(addAddressRequest.isDeliveryStatus());
         locationRepository.save(location);
         return locationDtoConverter.convertModelToResponse(location);
     }
-    public LocationResponse updateAddress(Long locationId,int addressIndex, AddAddressRequest addAddressRequest){
+    public LocationResponse updateAddress(String locationId,int addressIndex, AddAddressRequest addAddressRequest){
         Location location = findLocationById(locationId);
         if (addressIndex >= 0 && addressIndex < location.getAddress().size()) {
             Address addressToUpdate = location.getAddress().get(addressIndex);
@@ -57,7 +57,7 @@ public class LocationService {
         locationRepository.save(location);
         return locationDtoConverter.convertModelToResponse(location);
     }
-    public LocationResponse updateLocation(Long locationId, AddLocationRequest addLocationRequest){
+    public LocationResponse updateLocation(String locationId, AddLocationRequest addLocationRequest){
         Location location = findLocationById(locationId);
         location.setPackageId(addLocationRequest.getPackageId());
         location.setAddress(addLocationRequest.getAddressList());
@@ -65,10 +65,10 @@ public class LocationService {
         locationRepository.save(location);
         return locationDtoConverter.convertModelToResponse(location);
     }
-    public void deleteLocation(Long locationId){
+    public void deleteLocation(String locationId){
         locationRepository.delete(findLocationById(locationId));
     }
-    private Location findLocationById(Long locationId){
+    private Location findLocationById(String locationId){
         return locationRepository.findById(locationId).orElseThrow(()->new ResourceNotFoundException("Location","Id",locationId));
     }
 }
