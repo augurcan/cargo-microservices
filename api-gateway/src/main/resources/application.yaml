@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: package-service
+          uri: lb://package-service
+          predicates:
+            - Path=/v1/api/news/**
+        - id: location-service
+          uri: lb://location-service
+          predicates:
+            - Path=/v1/api/location/**
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/v1/api/user/**
+      discovery:
+        locator:
+          enabled: true
+server:
+  port: 8888
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_URI}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.value}
