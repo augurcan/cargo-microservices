@@ -1,0 +1,137 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+       RABBITMQ_DEFAULT_USER: username
+       RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - ./data/rabbitmq:/data/rabbitmq
+  userdb:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: user
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/user-data:/data/db
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    image: user-service:0.0.1
+    container_name: user-service-container
+    ports:
+      - "0:8080"
+    environment:
+      EUREKA_URI: http://eureka-server:8761/eureka
+      SPRING_DATASOURCE_URL: jdbc:mysql://userdb:3306/user
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: username
+      SPRING_RABBITMQ_PASSWORD: password
+    depends_on:
+      - userdb
+      - eureka-server
+      - rabbitmq
+    restart: always
+  packagedb:
+    image: mongo:5.0.25-focal
+    container_name: package-service-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: package
+    ports:
+      - "0:27017"
+    volumes:
+      - ./data/package-data:/data/db
+    restart: always
+
+  locationdb:
+    image: mongo:5.0.25-focal
+    container_name: location-service-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: location
+    ports:
+      - "0:27017"
+    volumes:
+      - ./data/location-data:/data/db
+    restart: always
+
+  package-service:
+    build:
+      context: ./package-service
+      dockerfile: Dockerfile
+    image: package-service:0.0.1
+    container_name: package-service-container
+    ports:
+      - "0:8080"
+    environment:
+      EUREKA_URI: http://eureka-server:8761/eureka
+      SPRING_DATA_MONGODB_URI: mongodb://admin:password@package-service-mongodb:27017/package?authSource=admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: username
+      SPRING_RABBITMQ_PASSWORD: password
+    depends_on:
+      - packagedb
+      - eureka-server
+      - rabbitmq
+    restart: always
+
+  location-service:
+    build:
+      context: ./location-service
+      dockerfile: Dockerfile
+    image: location-service:0.0.1
+    container_name: location-service-container
+    ports:
+      - "0:8080"
+    environment:
+      EUREKA_URI: http://eureka-server:8761/eureka
+      SPRING_DATA_MONGODB_URI: mongodb://admin:password@location-service-mongodb:27017/location?authSource=admin
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: username
+      SPRING_RABBITMQ_PASSWORD: password
+    depends_on:
+      - locationdb
+      - eureka-server
+      - rabbitmq
+    restart: always
+
+  gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    image: api-gateway:0.0.1
+    container_name: api-gateway-container
+    ports:
+      - "8888:8888"
+    environment:
+      EUREKA_URI: http://eureka-server:8761/eureka
+    restart: always
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    image: eureka-server:0.0.1
+    container_name: eureka-container
+    ports:
+      - "8761:8761"
+    restart: always
