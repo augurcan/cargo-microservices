@@ -8,8 +8,10 @@ import com.cargo.locationservice.exception.ResourceNotFoundException;
 import com.cargo.locationservice.model.Address;
 import com.cargo.locationservice.model.Location;
 import com.cargo.locationservice.repository.LocationRepository;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,18 +54,10 @@ public class LocationService {
         }
         return locationDtoConverter.convertModelToResponse(location);
     }
-    public LocationResponse addLocation(AddLocationRequest addLocationRequest){
-        Location location = locationDtoConverter.convertRequestToModel(addLocationRequest);
+    @RabbitListener(queues = "locationAddQueue")
+    public void addLocation(String packageId){
+        Location location = new Location(packageId,new ArrayList<>(),false);
         locationRepository.save(location);
-        return locationDtoConverter.convertModelToResponse(location);
-    }
-    public LocationResponse updateLocation(String locationId, AddLocationRequest addLocationRequest){
-        Location location = findLocationById(locationId);
-        location.setPackageId(addLocationRequest.getPackageId());
-        location.setAddress(addLocationRequest.getAddressList());
-        location.setDeliveryStatus(addLocationRequest.isDeliveryStatus());
-        locationRepository.save(location);
-        return locationDtoConverter.convertModelToResponse(location);
     }
     public void deleteLocation(String locationId){
         locationRepository.delete(findLocationById(locationId));

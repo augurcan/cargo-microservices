@@ -6,6 +6,8 @@ import com.cargo.packageservice.dto.converter.PackageDtoConverter;
 import com.cargo.packageservice.exception.ResourceNotFoundException;
 import com.cargo.packageservice.model.Package;
 import com.cargo.packageservice.repository.PackageRepository;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,15 +18,22 @@ import java.util.stream.Collectors;
 public class PackageService {
     private final PackageRepository packageRepository;
     private final PackageDtoConverter packageDtoConverter;
+    private final AmqpTemplate amqpTemplate;
+    private final DirectExchange directExchange;
 
-    public PackageService(PackageRepository packageRepository, PackageDtoConverter packageDtoConverter) {
+    public PackageService(PackageRepository packageRepository, PackageDtoConverter packageDtoConverter, AmqpTemplate amqpTemplate, DirectExchange directExchange) {
         this.packageRepository = packageRepository;
         this.packageDtoConverter = packageDtoConverter;
+        this.amqpTemplate = amqpTemplate;
+        this.directExchange = directExchange;
     }
     public PackageResponse addPackage(PackageRequest packageRequest){
         Package packageModel = packageDtoConverter.convertRequestToModel(packageRequest);
         packageModel.setPickupDate(LocalDate.now());
         packageRepository.save(packageModel);
+        amqpTemplate.convertAndSend(directExchange.getName(),"locationAddRoute",packageModel.getId());
+        amqpTemplate.convertAndSend(directExchange.getName(),"userRoute",packageModel.getSender());
+        amqpTemplate.convertAndSend(directExchange.getName(),"userRoute",packageModel.getRecipient());
         return packageDtoConverter.convertModelToResponse(packageModel);
     }
     public void deletePackage(String packageId){
@@ -41,7 +50,8 @@ public class PackageService {
         packageModel.setDeliveryStatus(packageRequest.isDeliveryStatus());
         packageModel.setShippingFees(packageRequest.getShippingFees());
         packageModel.setDeliveryAddress(packageRequest.getDeliveryAddress());
-        return new PackageResponse();
+        packageRepository.save(packageModel);
+        return packageDtoConverter.convertModelToResponse(packageModel);
     }
     public PackageResponse getPackageById(String packageId){
         Package packageModel = findPackageById(packageId);

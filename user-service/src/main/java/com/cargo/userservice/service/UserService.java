@@ -6,6 +6,7 @@ import com.cargo.userservice.dto.converter.UserDtoConverter;
 import com.cargo.userservice.exception.ResourceNotFoundException;
 import com.cargo.userservice.model.User;
 import com.cargo.userservice.repository.UserRepository;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class UserService{
         this.userRepository = userRepository;
         this.userDtoConverter = userDtoConverter;
     }
+    @RabbitListener(queues = "userQueue")
     public UserResponse addUser(AddUserRequest addUserRequest){
         User user = userDtoConverter.convertRequestToModel(addUserRequest);
         userRepository.save(user);
@@ -38,6 +40,7 @@ public class UserService{
         user.setSurname(addUserRequest.getSurname());
         user.setPhoneNumber(addUserRequest.getPhoneNumber());
         user.setEmail(addUserRequest.getEmail());
+        user.setIdentificationNumber(addUserRequest.getIdentificationNumber());
         userRepository.save(user);
         return userDtoConverter.convertModeltoResponse(user);
     }

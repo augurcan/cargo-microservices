@@ -1,7 +1,6 @@
 package com.cargo.locationservice.controller;
 
 import com.cargo.locationservice.dto.AddAddressRequest;
-import com.cargo.locationservice.dto.AddLocationRequest;
 import com.cargo.locationservice.dto.LocationResponse;
 import com.cargo.locationservice.service.LocationService;
 import org.springframework.http.ResponseEntity;
@@ -29,15 +28,6 @@ public class LocationController {
     public ResponseEntity<String> deleteLocation(@PathVariable String locationId){
         locationService.deleteLocation(locationId);
         return ResponseEntity.ok("Location Deleted");
-    }
-    @PostMapping
-    public ResponseEntity<LocationResponse> addLocation(@RequestBody AddLocationRequest addLocationRequest){
-        return ResponseEntity.ok(locationService.addLocation(addLocationRequest));
-    }
-    @PutMapping("/{locationId}")
-    public ResponseEntity<LocationResponse> updateLocation(@PathVariable String locationId,
-                                                           @RequestBody AddLocationRequest addLocationRequest){
-        return ResponseEntity.ok(locationService.updateLocation(locationId,addLocationRequest));
     }
     @PostMapping("/{locationId}/address")
     public ResponseEntity<LocationResponse> addAddress(@PathVariable String locationId,
