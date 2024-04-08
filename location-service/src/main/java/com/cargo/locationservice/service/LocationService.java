@@ -30,8 +30,8 @@ public class LocationService {
         this.amqpTemplate = amqpTemplate;
         this.directExchange = directExchange;
     }
-    public LocationResponse getLocationById(String locationId){
-        return locationDtoConverter.convertModelToResponse(findLocationById(locationId));
+    public LocationResponse getLocationById(String packageId){
+        return locationDtoConverter.convertModelToResponse(locationRepository.findByPackageId(packageId));
     }
     public List<LocationResponse> getAllLocations(){
         List<Location> locationList= locationRepository.findAll();
@@ -47,8 +47,8 @@ public class LocationService {
         locationRepository.save(location);
         return locationDtoConverter.convertModelToResponse(location);
     }
-    public LocationResponse updateAddress(String locationId,int addressIndex, AddAddressRequest addAddressRequest){
-        Location location = findLocationById(locationId);
+    public LocationResponse updateAddress(String packageId,int addressIndex, AddAddressRequest addAddressRequest){
+        Location location = locationRepository.findByPackageId(packageId);
         if (addressIndex >= 0 && addressIndex < location.getAddress().size()) {
             Address addressToUpdate = location.getAddress().get(addressIndex);
             addressToUpdate.setDetail(addAddressRequest.getAddress().getDetail());

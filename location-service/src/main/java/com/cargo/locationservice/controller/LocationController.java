@@ -16,11 +16,11 @@ public class LocationController {
     public LocationController(LocationService locationService) {
         this.locationService = locationService;
     }
-    @GetMapping("/{locationId}")
-    public ResponseEntity<LocationResponse> getLocationById(@PathVariable String locationId){
-        return ResponseEntity.ok(locationService.getLocationById(locationId));
+    @GetMapping("/package/{packageId}")
+    public ResponseEntity<LocationResponse> getLocationByPackageId(@PathVariable String packageId){
+        return ResponseEntity.ok(locationService.getLocationById(packageId));
     }
-    @GetMapping
+    @GetMapping("/package/")
     public ResponseEntity<List<LocationResponse>> getAllLocations(){
         return ResponseEntity.ok(locationService.getAllLocations());
     }
@@ -29,15 +29,15 @@ public class LocationController {
         locationService.deleteLocation(locationId);
         return ResponseEntity.ok("Location Deleted");
     }
-    @PostMapping("/{locationId}/address")
-    public ResponseEntity<LocationResponse> addAddress(@PathVariable String locationId,
+    @PostMapping("/package/{packageId}/address")
+    public ResponseEntity<LocationResponse> addAddress(@PathVariable String packageId,
                                                        @RequestBody AddAddressRequest addAddressRequest){
-        return ResponseEntity.ok(locationService.addNewAddressToLocation(locationId,addAddressRequest));
+        return ResponseEntity.ok(locationService.addNewAddressToLocation(packageId,addAddressRequest));
     }
-    @PutMapping("/{locationId}/address/{addressIndex}")
-    public ResponseEntity<LocationResponse> updateAddress(@PathVariable String locationId,
+    @PutMapping("/package/{packageId}/address/{addressIndex}")
+    public ResponseEntity<LocationResponse> updateAddress(@PathVariable String packageId,
                                                           @PathVariable int addressIndex,
                                                           @RequestBody AddAddressRequest addAddressRequest){
-        return ResponseEntity.ok(locationService.updateAddress(locationId,addressIndex,addAddressRequest));
+        return ResponseEntity.ok(locationService.updateAddress(packageId,addressIndex,addAddressRequest));
     }
 }
