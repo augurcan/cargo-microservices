@@ -7,7 +7,7 @@ spring:
         - id: package-service
           uri: lb://package-service
           predicates:
-            - Path=/v1/api/news/**
+            - Path=/v1/api/package/**
         - id: location-service
           uri: lb://location-service
           predicates:
