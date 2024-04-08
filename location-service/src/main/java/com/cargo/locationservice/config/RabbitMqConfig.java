@@ -24,6 +24,14 @@ public class RabbitMqConfig {
         return new Queue("locationAddQueue", true);
     }
     @Bean
+    Queue statusQueue() {
+        return new Queue("statusQueue", true);
+    }
+    @Bean
+    Binding statusBinding(Queue statusQueue, DirectExchange exchange){
+        return BindingBuilder.bind(statusQueue).to(exchange).with("statusRoute");
+    }
+    @Bean
     Binding locationBinding(Queue locationAddQueue, DirectExchange exchange){
         return BindingBuilder.bind(locationAddQueue).to(exchange).with("locationAddRoute");
     }

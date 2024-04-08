@@ -1,5 +1,6 @@
 package com.cargo.packageservice.service;
 
+import com.cargo.packageservice.dto.MailDto;
 import com.cargo.packageservice.dto.PackageRequest;
 import com.cargo.packageservice.dto.PackageResponse;
 import com.cargo.packageservice.dto.converter.PackageDtoConverter;
@@ -8,6 +9,7 @@ import com.cargo.packageservice.model.Package;
 import com.cargo.packageservice.repository.PackageRepository;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -63,5 +65,12 @@ public class PackageService {
     }
     private Package findPackageById(String packageId){
         return packageRepository.findById(packageId).orElseThrow(()->new ResourceNotFoundException("Package","Id",packageId));
+    }
+    @RabbitListener(queues = "statusQueue")
+    public void setDeliveryStatusTrue(String packageId){
+        Package packageModel = findPackageById(packageId);
+        packageModel.setDeliveryStatus(true);
+        MailDto mailDto = new MailDto(packageModel.getSender(),packageModel.getRecipient());
+        amqpTemplate.convertAndSend(directExchange.getName(),"mailRoute",mailDto);
     }
 }

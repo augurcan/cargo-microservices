@@ -12,6 +12,7 @@ services:
        RABBITMQ_DEFAULT_PASS: password
     volumes:
       - ./data/rabbitmq:/data/rabbitmq
+    restart: always
   userdb:
     image: mysql
     restart: always
@@ -111,6 +112,29 @@ services:
     depends_on:
       - locationdb
       - eureka-server
+      - rabbitmq
+    restart: always
+
+  mail-service:
+    build:
+      context: ./mail-service
+      dockerfile: Dockerfile
+    image: mail-service:0.0.1
+    container_name: mail-service-container
+    ports:
+      - "0:8080"
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: username
+      SPRING_RABBITMQ_PASSWORD: password
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
+      SPRING_MAIL_USERNAME: username
+      SPRING_MAIL_PASSWORD: password
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
+    depends_on:
       - rabbitmq
     restart: always
 

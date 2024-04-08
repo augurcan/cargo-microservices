@@ -1,13 +1,15 @@
 package com.cargo.locationservice.service;
 
 import com.cargo.locationservice.dto.AddAddressRequest;
-import com.cargo.locationservice.dto.AddLocationRequest;
+
 import com.cargo.locationservice.dto.LocationResponse;
 import com.cargo.locationservice.dto.converter.LocationDtoConverter;
 import com.cargo.locationservice.exception.ResourceNotFoundException;
 import com.cargo.locationservice.model.Address;
 import com.cargo.locationservice.model.Location;
 import com.cargo.locationservice.repository.LocationRepository;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +21,14 @@ import java.util.stream.Collectors;
 public class LocationService {
     private final LocationRepository locationRepository;
     private final LocationDtoConverter locationDtoConverter;
+    private final AmqpTemplate amqpTemplate;
+    private final DirectExchange directExchange;
 
-    public LocationService(LocationRepository locationRepository, LocationDtoConverter locationDtoConverter) {
+    public LocationService(LocationRepository locationRepository, LocationDtoConverter locationDtoConverter, AmqpTemplate amqpTemplate, DirectExchange directExchange) {
         this.locationRepository = locationRepository;
         this.locationDtoConverter = locationDtoConverter;
+        this.amqpTemplate = amqpTemplate;
+        this.directExchange = directExchange;
     }
     public LocationResponse getLocationById(String locationId){
         return locationDtoConverter.convertModelToResponse(findLocationById(locationId));
@@ -36,6 +42,8 @@ public class LocationService {
         Location location = findLocationById(locationId);
         location.getAddress().add(addAddressRequest.getAddress());
         location.setDeliveryStatus(addAddressRequest.isDeliveryStatus());
+        if(location.isDeliveryStatus())
+            amqpTemplate.convertAndSend(directExchange.getName(),"statusRoute",location.getPackageId());
         locationRepository.save(location);
         return locationDtoConverter.convertModelToResponse(location);
     }
