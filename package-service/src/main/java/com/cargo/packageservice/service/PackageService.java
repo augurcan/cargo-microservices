@@ -70,6 +70,7 @@ public class PackageService {
     public void setDeliveryStatusTrue(String packageId){
         Package packageModel = findPackageById(packageId);
         packageModel.setDeliveryStatus(true);
+        packageModel.setDeliveryDate(LocalDate.now());
         MailDto mailDto = new MailDto(packageModel.getSender(),packageModel.getRecipient());
         amqpTemplate.convertAndSend(directExchange.getName(),"mailRoute",mailDto);
     }
