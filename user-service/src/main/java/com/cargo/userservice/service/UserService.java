@@ -7,7 +7,9 @@ import com.cargo.userservice.exception.ResourceNotFoundException;
 import com.cargo.userservice.model.User;
 import com.cargo.userservice.repository.UserRepository;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,9 @@ public class UserService{
     }
     @RabbitListener(queues = "userQueue")
     public UserResponse addUser(AddUserRequest addUserRequest){
+        User checkUser = userRepository.findByIdentificationNumber(addUserRequest.getIdentificationNumber());
+        if(checkUser!= null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A user with this identification number already exists");
+
         User user = userDtoConverter.convertRequestToModel(addUserRequest);
         userRepository.save(user);
         return userDtoConverter.convertModeltoResponse(user);
