@@ -11,7 +11,9 @@ import com.cargo.locationservice.repository.LocationRepository;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,15 +33,15 @@ public class LocationService {
         this.directExchange = directExchange;
     }
     public LocationResponse getLocationById(String packageId){
-        return locationDtoConverter.convertModelToResponse(locationRepository.findByPackageId(packageId));
+        Location location = findByPackageId(packageId);
+        return locationDtoConverter.convertModelToResponse(location);
     }
     public List<LocationResponse> getAllLocations(){
         List<Location> locationList= locationRepository.findAll();
         return locationList.stream().map(locationDtoConverter::convertModelToResponse).collect(Collectors.toList());
     }
-
-    public LocationResponse addNewAddressToLocation(String locationId, AddAddressRequest addAddressRequest){
-        Location location = findLocationById(locationId);
+    public LocationResponse addNewAddressToLocation(String packageId, AddAddressRequest addAddressRequest){
+        Location location = findByPackageId(packageId);
         location.getAddress().add(addAddressRequest.getAddress());
         location.setDeliveryStatus(addAddressRequest.isDeliveryStatus());
         if(location.isDeliveryStatus())
@@ -48,7 +50,7 @@ public class LocationService {
         return locationDtoConverter.convertModelToResponse(location);
     }
     public LocationResponse updateAddress(String packageId,int addressIndex, AddAddressRequest addAddressRequest){
-        Location location = locationRepository.findByPackageId(packageId);
+        Location location = findByPackageId(packageId);
         if (addressIndex >= 0 && addressIndex < location.getAddress().size()) {
             Address addressToUpdate = location.getAddress().get(addressIndex);
             addressToUpdate.setDetail(addAddressRequest.getAddress().getDetail());
@@ -56,6 +58,7 @@ public class LocationService {
             addressToUpdate.setPostalCode(addAddressRequest.getAddress().getPostalCode());
             addressToUpdate.setStreet(addAddressRequest.getAddress().getStreet());
             addressToUpdate.setCity(addAddressRequest.getAddress().getCity());
+            location.setDeliveryStatus(addAddressRequest.isDeliveryStatus());
             locationRepository.save(location);
         } else {
             throw new IllegalArgumentException("Invalid address index");
@@ -68,9 +71,11 @@ public class LocationService {
         locationRepository.save(location);
     }
     public void deleteLocation(String locationId){
-        locationRepository.delete(findLocationById(locationId));
+        locationRepository.deleteById(locationId);
     }
-    private Location findLocationById(String locationId){
-        return locationRepository.findById(locationId).orElseThrow(()->new ResourceNotFoundException("Location","Id",locationId));
+    private Location findByPackageId(String packageId){
+        Location location = locationRepository.findByPackageId(packageId);
+        if(location==null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Location with the specified package ID not found");
+        return location;
     }
 }
