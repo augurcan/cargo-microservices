@@ -12,7 +12,7 @@ public class PackageResponse {
     private String deliveryService;
     private boolean deliveryStatus;
     private double shippingFees;
-    private String deliveryAddress;
+    private AddressDto deliveryAddress;
     private LocalDate pickupDate;
     private LocalDate deliveryDate;
 
@@ -28,7 +28,7 @@ public class PackageResponse {
                            String deliveryService,
                            boolean deliveryStatus,
                            double shippingFees,
-                           String deliveryAddress,
+                           AddressDto deliveryAddress,
                            LocalDate pickupDate,
                            LocalDate deliveryDate) {
         this.id = id;
@@ -69,11 +69,11 @@ public class PackageResponse {
         this.pickupDate = pickupDate;
     }
 
-    public String getDeliveryAddress() {
+    public AddressDto getDeliveryAddress() {
         return deliveryAddress;
     }
 
-    public void setDeliveryAddress(String deliveryAddress) {
+    public void setDeliveryAddress(AddressDto deliveryAddress) {
         this.deliveryAddress = deliveryAddress;
     }
 
