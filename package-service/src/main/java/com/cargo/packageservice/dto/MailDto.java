@@ -1,7 +1,14 @@
 package com.cargo.packageservice.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 public class MailDto {
+    @NotNull
+    @Valid
     private UserDto sender;
+    @NotNull
+    @Valid
     private UserDto recipient;
 
     public MailDto(UserDto sender, UserDto recipient) {

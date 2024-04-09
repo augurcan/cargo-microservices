@@ -1,15 +1,31 @@
 package com.cargo.packageservice.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
 public class PackageRequest {
+    @NotNull
+    @Valid
     private UserDto sender;
+    @NotNull
+    @Valid
     private UserDto recipient;
+    @NotBlank
     private String content;
+    @Positive
     private double weight;
+    @NotBlank
     private String dimension;
+    @NotBlank
     private String deliveryService;
     private boolean deliveryStatus;
+    @Positive
     private double shippingFees;
-    private String deliveryAddress;
+    @NotNull
+    @Valid
+    private AddressDto deliveryAddress;
 
     public PackageRequest() {
     }
@@ -22,7 +38,7 @@ public class PackageRequest {
                           String deliveryService,
                           boolean deliveryStatus,
                           double shippingFees,
-                          String deliveryAddress) {
+                          AddressDto deliveryAddress) {
         this.sender = sender;
         this.recipient = recipient;
         this.content = content;
@@ -98,11 +114,11 @@ public class PackageRequest {
         this.shippingFees = shippingFees;
     }
 
-    public String getDeliveryAddress() {
+    public AddressDto getDeliveryAddress() {
         return deliveryAddress;
     }
 
-    public void setDeliveryAddress(String deliveryAddress) {
+    public void setDeliveryAddress(AddressDto deliveryAddress) {
         this.deliveryAddress = deliveryAddress;
     }
 }

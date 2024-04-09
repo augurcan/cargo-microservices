@@ -3,13 +3,17 @@ package com.cargo.locationservice.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 
 @Document
 public class Location {
     @Id
     private String id;
+    @NotBlank
     private String packageId;
+    @NotNull
     private ArrayList<Address> address;
     private boolean deliveryStatus;
 

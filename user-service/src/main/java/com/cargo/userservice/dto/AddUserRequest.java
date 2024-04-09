@@ -1,10 +1,18 @@
 package com.cargo.userservice.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class AddUserRequest {
+    @NotBlank
     private String name;
+    @NotBlank
     private String surname;
+    @NotBlank
     private String phoneNumber;
+    @NotBlank
     private String email;
+    @NotNull
     private Long identificationNumber;
 
     public AddUserRequest() {

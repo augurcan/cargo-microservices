@@ -2,7 +2,12 @@ package com.cargo.locationservice.dto;
 
 import com.cargo.locationservice.model.Address;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 public class AddAddressRequest{
+    @NotNull
+    @Valid
     private Address address;
     private boolean deliveryStatus;
 

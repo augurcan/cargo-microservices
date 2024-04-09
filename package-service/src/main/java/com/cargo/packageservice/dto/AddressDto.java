@@ -1,8 +1,8 @@
-package com.cargo.locationservice.model;
+package com.cargo.packageservice.dto;
 
 import javax.validation.constraints.NotBlank;
 
-public class Address {
+public class AddressDto {
     @NotBlank
     private String city;
     @NotBlank
@@ -14,12 +14,12 @@ public class Address {
     @NotBlank
     private String detail;
 
-    public Address() {
+    public AddressDto() {
     }
 
-    public Address(String city, String district,
-                   String postalCode, String street,
-                   String detail) {
+    public AddressDto(String city, String district,
+                      String postalCode, String street,
+                      String detail) {
         this.city = city;
         this.district = district;
         this.postalCode = postalCode;
